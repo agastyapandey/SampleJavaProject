@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+    	http://www.springframework.org/schema/beans
+    	http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<mvc:annotation-driven />
+	
+	<bean id="projectRoleService" class="employee.service.ProjectRoleService"></bean>
+	
+	<bean id="employeeProjectRoleService" class="employee.service.EmployeeProjectRoleService"></bean>
+
+	<bean id="employeeService" class="employee.service.EmployeeService"></bean>
+
+	<bean id="roleService" class="employee.service.RoleService"></bean>
+
+	<bean id="projectService" class="employee.service.ProjectService"></bean>
+	
+	<bean id="taskService" class="employee.service.TaskService"></bean>
+	
+	<bean id="employeetaskService" class="employee.service.EmployeeTaskService"></bean>
+	
+	<bean id="validationService" class="employee.service.ValidationService"></bean>
+
+	<context:component-scan base-package="employee.controller" />
+	
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://localhost:3306/projectmanagement_db?autoReconnect=true"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="root"></property>
+	</bean>
+
+	<bean id="mysessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		
+		<property name="annotatedClasses">
+			<list>
+				<value>employee.info.Employee</value>
+				<value>employee.info.Role</value>
+				<value>employee.info.Project</value>
+				<value>employee.info.ProjectRole</value>
+				<value>employee.info.EmployeeProjectRole</value>
+				<value>employee.info.Task</value>
+				<value>employee.info.SubTask</value>
+				<value>employee.info.EmployeeTask</value>
+			</list>
+		</property>
+
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.show_sql">true</prop>
+			</props>
+		</property>
+
+	</bean>
+
+	<tx:annotation-driven />
+
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+		<property name="sessionFactory" ref="mysessionFactory" />
+	</bean>
+
+
+	<bean id="template" class="org.springframework.orm.hibernate4.HibernateTemplate">
+		<property name="sessionFactory" ref="mysessionFactory"></property>
+	</bean>
+
+</beans>
